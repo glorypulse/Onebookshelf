@@ -1,0 +1,213 @@
+@(book: controllers.form.BookDetail, mycomment: controllers.form.MyComment, myCommentForm: Form[controllers.form.MyComment],
+ gpForm: Form[controllers.form.BookGP], gp_map: (Seq[(String, String)], Seq[(String, String)]))
+
+@import helper._
+@import b3.vertical.fieldConstructor
+@import common._
+
+@fd = @{new java.text.SimpleDateFormat("yyyy-MM-dd")}
+@genre_map = @{gp_map._1}
+@place_map = @{gp_map._2}
+@main(title = "本棚アプリ - 本情報詳細") {
+
+  @header(true)
+  
+  <div class="container">
+    <div class="row">
+  
+      @sidebar()
+  
+      <div class="col-xs-12 col-sm-9">
+  
+        <!-- コンテンツ -->
+        <div class="row">
+          <div class="col-xs-12">
+            <div class="panel panel-default bookinfo">
+              <div class="panel-heading">
+                <h1>@book.title</h1>
+              </div>
+              <div class="panel-body">
+              @if((gpForm.hasGlobalErrors || gpForm.hasErrors) && !gpForm.globalErrors.filterNot(_.message.contains("info")).isEmpty) { 
+                    <div class="col-xs-12 alert alert-danger"><ul class="list-unstyled">
+                    @for(error <- gpForm.globalErrors.filterNot(_.message.contains("info"))) {
+                      <li>@Messages(error.message)</li>
+                    }
+                  </ul></div>
+                  }
+                  @if(gpForm.hasGlobalErrors && !gpForm.globalErrors.filter(_.message.contains("info")).isEmpty) {
+                  <div class="col-xs-12 alert alert-info"><ul class="list-unstyled">
+                    @for(info <- gpForm.globalErrors.filter(_.message.contains("info"))) {
+                      <li>@Messages(info.message)</li>
+                    }
+                  </ul></div>
+                  }
+                <div class="row">
+                  <div class="col-xs-12 col-sm-4">
+                    <a href="@book.amazon_url" target="_blank"><img src="@book.img_url" class="img-responsive img-thumbnail"></a>
+                  </div>
+  
+                  
+                  <!-- <h2>Book Information</h2> -->
+                  
+                  <div class="col-xs-12 col-sm-8">
+                  @b3.form(controllers.search.routes.BookDetailController.updateBookInfo(book.shelf_id, book.book_id)) {
+                    <table class="table">
+                      <tr>
+                        <td class="col-xs-12 col-md-3">著者名</td>
+                        <td>@book.author</td>
+                      </tr>
+                      <tr>
+                        <td>発行年</td>
+                        <td>@book.year</td>
+                      </tr>
+                      <tr>
+                        <td>出版社</td>
+                        <td>@book.publish</td>
+                      </tr>
+                      <tr>
+                        <td>EAN</td>
+                        <td>@book.ean</td>
+                      </tr>
+                      
+                    <tr><td colspan="2" class="editbtn">
+                      <button class="btn btn-primary gp b_edit"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                      <!-- 自分のところだけ出る -->
+                      <button class="btn btn-primary gp b_submit">修正</button>
+                      <button class="btn btn-warning gp b_cancel">キャンセル</button>
+                    </td></tr>
+                      <tr class="gp text">
+                        <td>保管場所</td>
+                        <td>@book.place</td>
+                      </tr>
+                      <tr class="gp Form">
+                        <td>保管場所</td>
+                        <td>@b3.select(gpForm("place_id"), options=place_map)</td>
+                      </tr>
+                      <tr class="gp text">
+                        <td>ジャンル</td>
+                        <td>@book.genre</td>
+                      </tr>
+                      <tr class="gp Form">
+                        <td>ジャンル</td>
+                        <td>@b3.select(gpForm("genre_id"), options=genre_map)</td>
+                      </tr>
+                    </table>
+                    }
+                    <!-- <h2>Memo</h2> -->
+                    @form(controllers.search.routes.BookDetailController.updateComment(book.shelf_id, book.book_id)) {
+                    
+                      <div class="panel panel-info usercomment">
+                        <div class="panel-heading">
+                          <h3 class="panel-title-sub comment_myself">【@mycomment.username】の記録</h3>
+                          <input type="hidden" name="username" value="@mycomment.username">
+                          <div>
+                            <button class="btn btn-primary comment b_edit"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></button>
+                            <!-- 自分のところだけ出る -->
+                            <button class="btn btn-primary comment b_submit">修正</button>
+                            <button class="btn btn-warning comment b_cancel">キャンセル</button>
+                          </div>
+                        </div>
+  
+                        <div class="panel-body">
+                          <ul class="list-unstyled">
+                            <li class="myself read">
+                              <ul class="list-inline">
+                                <li><b>@{mycomment.read_flag match {
+                                    case OBSConstants.Unread => Messages("str.unread")
+                                    case OBSConstants.Reading => Messages("str.reading")
+                                    case OBSConstants.Read => Messages("str.read")
+                                    case _ => Messages("str.unread") 
+                                    }}</b></li>
+                                <li>@{(mycomment.start_day, mycomment.finish_day, mycomment.read_flag) match {
+                                    case (None, None, _) => ""
+                                    case (Some(s_day), None, flag) => (if(flag==OBSConstants.Unread){Messages("str.plan")} else{""}) + fd.format(s_day) + "〜" 
+                                    case (None, Some(f_day), flag) if flag > OBSConstants.Unread => "〜" + (if(flag<OBSConstants.Read){Messages("str.plan")}else{""}) + fd.format(f_day)
+                                    case (Some(s_day), Some(f_day), flag) => (if(flag==OBSConstants.Unread){Messages("str.plan")} else{""}) + fd.format(s_day) +  
+                                                                              "〜" + (if(flag<2){Messages("str.plan")}else{""}) + fd.format(f_day)
+                                    }}
+                                </li>
+                              </ul>
+                            </li>
+                            <li class="myself readForm form-group">
+                            <label>読書状況</label>
+                            <select name="read_flag" class="form-control">
+                                <option value="@OBSConstants.Unread"@if(mycomment.read_flag == OBSConstants.Unread){ selected}>@Messages("str.unread")</option>
+                                <option value="@OBSConstants.Reading"@if(mycomment.read_flag == OBSConstants.Reading){ selected}>@Messages("str.reading")</option>
+                                <option value="@OBSConstants.Read"@if(mycomment.read_flag == OBSConstants.Read){ selected}>@Messages("str.read")</option>
+                            </select></li>
+                            <li class="myself calendarForm form-group">
+                              <label>@{mycomment.read_flag match {
+                                    case OBSConstants.Unread => "開始予定日"
+                                    case _ => "開始日"
+                                  }}
+                              </label>
+                              <input id="readStartDate" type="date" name="start_day"
+                               value="@{mycomment.start_day match { case Some(s_day)=> fd.format(s_day); case None => new String }}" class="form-control">
+                              @if(mycomment.read_flag != OBSConstants.Unread){<label>}
+                              @{mycomment.read_flag match {
+                                    case OBSConstants.Unread => ""
+                                    case OBSConstants.Reading => "終了予定日"
+                                    case OBSConstants.Read => "終了日"                                    
+                                  }}
+                              @if(mycomment.read_flag != OBSConstants.Unread){</label>}
+                              <input id="readEndDate" type="@if(mycomment.read_flag == 0){hidden} else{date}" name="finish_day"
+                               value="@{mycomment.finish_day match { case Some(f_day)=> fd.format(f_day); case None => new String }}" class="form-control">
+                            </li>
+                            <li class="myself memo">
+                            @if(!mycomment.memo.isEmpty()) {
+                              <div class="well">@mycomment.memo</div>
+                              }</li>
+                            <li class="myself memoForm form-group"><label>メモ（非公開）</label> <textarea name="memo" class="well form-control">@mycomment.memo</textarea></li>
+                            <li class="myself memo">
+                            @if(!mycomment.impression.isEmpty()) {
+                              <div class="well">@mycomment.impression</div>
+                              }</li>
+                            <li class="myself memoForm form-group"><label>感想（公開）</label> <textarea name="impression" class="well form-control">@mycomment.impression</textarea></li>
+                          </ul>
+                        </div>
+                      </div><!--  mycomment panel -->
+                    }
+                    
+                    @for(fcomment <- book.friendcomment) {
+                    <div class="well">
+                    <h3>【@fcomment.username】の記録</h3>
+                          <ul class="list-unstyled">
+                            <li class="friend read">
+                              <ul class="list-inline">
+                                <li><b>@{fcomment.read_flag match {
+                                    case OBSConstants.Unread => Messages("str.unread")
+                                    case OBSConstants.Reading => Messages("str.reading")
+                                    case OBSConstants.Read => Messages("str.read")
+                                    case _ => Messages("str.unread") 
+                                    }}</b></li>
+                                <li>@{(fcomment.start_day, fcomment.finish_day, fcomment.read_flag) match {
+                                    case (None, _, _) => ""
+                                    case (Some(s_day), None, flag) => (if(flag==OBSConstants.Unread){Messages("str.plan")} else{""}) + fd.format(s_day) + "〜" 
+                                    case (Some(s_day), Some(f_day), flag) => (if(flag==OBSConstants.Unread){Messages("str.plan")} else{""}) + fd.format(s_day) +
+                                                                               "〜" + (if(flag<OBSConstants.Read){Messages("str.plan")}else{""}) + fd.format(f_day) 
+                                    }}
+                                </li>
+                              </ul>
+                            </li>
+                            <li class="friend memo">
+                            @if(!fcomment.impression.isEmpty()) {
+                              <div class="well">@fcomment.impression</div>
+                              }</li>
+                          </ul>
+                  </div>
+                  }
+                  </div>
+                </div>
+              </div>
+            </div> <!--  book panel -->
+            
+  
+          </div>
+        </div>
+  
+  @back("")
+  
+      </div>
+    </div> <!--  row for sidebar -->
+  </div> <!-- container -->
+}

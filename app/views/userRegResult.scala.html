@@ -1,0 +1,56 @@
+@(word: String, user: models.db.User)
+
+@main(title = "本棚アプリ - ユーザー登録結果") {
+
+<!-- ヘッダー -->
+@header(true)
+
+  <div class="container">
+
+    <!-- コンテンツ -->
+    <div class="col-xs-12 col-sm-8 col-sm-push-2">
+      <div class="row">
+
+        <!-- 見出し -->
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <h1 class="page-header">ユーザー登録結果</h1> 
+        </div>
+        
+        <div class="col-xs-12 alert alert-info">
+          以下の内容で、ユーザー登録を行いました。
+        </div>
+
+        <!-- テーブル -->
+        <div class="table-responsive col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <table class="table table-bordered table-striped ">
+            <thead>
+              <tr>
+                <th>ユーザ名</th>
+                <th>メールアドレス</th>
+                <!-- <th align="center"></th> -->
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>@user.user_name</td>
+                <td>@user.mail</td>
+<!--                 <td align="center">
+                  <a href="/books/@user.user_id/update" class="btn btn-primary">更新</a>
+                  <input type="button" class="btn btn-danger" value="削除" onClick='if(confirm("本当に削除してよろしいですか？")) {location.href="/books/@user.user_id/remove"}'>
+                </td> -->
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="col-xs-12">
+        <hr style="height:30px">
+          <ul class="list-unstyled">
+            <li class="col-xs-6 col-sm-3 col-sm-push-3 text-center"><a href="/books/search" class="btn btn-primary">本の検索・登録へ</a></li>
+            <li class="col-xs-6 col-sm-3 col-sm-push-3 text-center"><a href="/shelfs/update" class="btn btn-warning">本棚の管理へ</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+ </div>
+}

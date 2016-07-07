@@ -1,0 +1,179 @@
+@(user_id: Long, word: String, localbooks: List[controllers.form.BookSearch], books: List[controllers.form.BookSearch],
+  gp_map: (Seq[(String, String)], Seq[(String, String)]),
+  bsForm: Form[controllers.form.BookSearch])
+
+@import helper._
+@import collection.JavaConversions._
+@genre_map = @{gp_map._1}
+@place_map = @{gp_map._2}
+@main(title ="本棚アプリ - 本情報検索") {
+
+@header(true)
+
+<div class="container">
+  <div class="row">
+
+  @sidebar()
+
+  <div class="col-xs-12 col-sm-9">
+  
+    <!-- 見出し -->
+    <!-- <div class="row">
+      <div class="col-xs-12">
+        <h1 class="page-header">本情報一覧（検索/本棚への登録/更新/削除）</h1>
+      </div>
+    </div> -->
+    
+    <!-- 検索フォーム -->
+    <div class="row">
+      <div class="col-xs-12">
+        @form(action=controllers.search.routes.BookController.searchMyBook(user_id),
+        'class -> "form-inline", 'role -> "search") {
+        <div class="form-group">
+          <label class="sr-only" for="keyword">キーワード入力</label>
+          <input type="search" name="word" value="@word" class="form-control" placeholder="キーワード/EAN/ASINを入力してください" id="keyword" size="60">
+        </div>
+        <div class="form-group">
+          <input type="submit" value="本を検索する" class="btn btn-info">
+        </div>
+        }
+      </div>
+    </div>
+
+    <!-- 検索結果表示 -->    
+    <div class="row">
+      <div class="col-xs-12" style="height:20px;"></div>
+      <div class="col-xs-12">
+      
+      @if((bsForm.hasGlobalErrors || bsForm.hasErrors) && !bsForm.globalErrors.filterNot(_.message.contains("info")).isEmpty) { 
+        <div class="alert alert-danger"><ul class="list-unstyled">
+          @if(!bsForm.hasGlobalErrors) { <li>@Messages("error.amazon")</li> }
+          @for(error <- bsForm.globalErrors.filterNot(_.message.contains("info"))) {
+            <li>@Messages(error.message)</li>
+          }
+        </ul></div>
+      } else {
+        <div class="alert alert-info"><ul class="list-unstyled">
+          @if(bsForm.hasGlobalErrors && !bsForm.globalErrors.filter(_.message.contains("info")).isEmpty) {
+            @for(info <- bsForm.globalErrors.filter(_.message.contains("info"))) {
+                <li>@Messages(info.message)</li>
+            }
+          }
+          @if(word.isEmpty){
+            <li>本棚に@(localbooks.size)冊あります。@if(localbooks.size > 5){最新5件表示しています。}</li>
+          } else {
+            <li>本棚にある本が@(localbooks.size)件、本棚には無い本が@(books.size)件@if(books.size==30){以上}一致しました。</li>
+            <li>目当ての本が見つからない場合は、キーワードを変えて検索してください。</li>
+          }
+          </ul></div>
+        }
+        <div class="row">
+          <!-- <div class="col-xs-12">
+            <h3>本棚の中</h3>
+          </div> -->
+        </div>
+        <div class="row">
+          <div class="col-xs-12">
+          <div class="book_carousel" style="width:100%;margin-left:auto;margin-right:auto;">
+          @localbooks.map{ book =>
+          <div class="book_tile">
+            <img src="@book.img_url" alt="画像" class="img-thumbnail book_img">
+            <p class="book_kindle">@if(book.product=="eBooks"){<span class="book_kindle_text bg-info">[Kindle]</span>}</p>
+            <p class="text-primary book_title">@book.title</p>
+            <p class="book_author">@book.author</p>
+            <p>@book.place</p>
+            @form(action=controllers.search.routes.BookDetailController.showBook()) {
+              <input type="hidden" name="book_id" value="@book.book_id" />
+              <input type="hidden" name="shelf_id" value="@book.shelf_id" />
+              <input type="submit" value="詳細" class="btn btn-info" />
+            }
+            <!-- <input type="button" class="btn btn-danger" value="削除" onClick='if(confirm("本当に削除してよろしいですか？")) {location.href="/books/@book.book_id/remove"}'> -->
+          </div>
+          }
+          </div>
+        </div>
+        </div>
+        
+        @if(books.size != 0){
+          <div class="row">
+            <div class="col-xs-12">
+              <hr>
+              <h3>本棚にない本</h3>
+            </div>
+          </div>
+
+        
+        <div class="row">
+          <div class="col-xs-12">
+          <div class="book_carousel" style="width:100%;margin-left:auto;margin-right:auto;">
+          @books.map{ book =>
+          <div class="book_tile">
+            <a href="@book.amazon_url" target="_blank"><img src="@if(!book.img_url.isEmpty){ @book.img_url }else{ /assets/images/book_dummy.png }"
+               alt="@book.title"  class="img-thumbnail book_img"></a>
+            <p class="book_kindle">@if(book.product=="eBooks"){<span class="book_kindle_text bg-info">[Kindle]</span>}</p>
+            <p class="text-primary book_title">@book.title</p>
+            <p class="book_author">@book.author</p>
+
+            <button type="button" class="btn btn-primary" onclick="document.getElementById('modal@book.asin').click()">登録</button>
+          </div>
+          }
+          </div>
+        </div>
+        
+        
+        <!--  Modal window -->
+         @books.map{ book =>
+        <button type="button" style="visibility:hidden;" data-toggle="modal" data-target="#regModal@book.asin" id="modal@book.asin"></button>
+        <div class="modal fade" id="regModal@book.asin" tabindex="-1" role="dialog" aria-labelledby="label_regModal@book.asin">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span><span class="sr-only">閉じる</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">「@book.title」の登録</h4>
+                  </div>
+                  @form(controllers.shelf.routes.BookShelfController.registerBook(book.shelf_id)) {
+                  <div class="modal-body">
+                    <fieldset>
+                    <input type="hidden" name="series_name" value="@book.series_name">
+                    <input type="hidden" name="title" value="@book.title">
+                    <input type="hidden" name="author" value="@book.author">
+                    <input type="hidden" name="publish" value="@book.publish">
+                    <input type="hidden" name="book_id" value="@book.book_id">
+                    <input type="hidden" name="shelf_id" value="@book.shelf_id">
+                    <input type="hidden" name="year" value="@book.year">
+                    <input type="hidden" name="amazon_url" value="@book.amazon_url">
+                    <input type="hidden" name="asin" value="@book.asin">
+                    <input type="hidden" name="product" value="@book.product">
+                    <input type="hidden" name="ean" value="@book.ean">
+                    <input type="hidden" name="isbn" value="@book.isbn">
+                    <input type="hidden" name="img_url" value="@book.img_url">
+                    <div class="form-group">
+                      @select(bsForm("place"), place_map, '_label -> "保管場所", 'class -> "form-control")
+                      @select(bsForm("genre"), genre_map, '_label -> "ジャンル", 'class -> "form-control")
+                    </div>
+                    </fieldset>
+                  </div>
+                  <div class="modal-footer">
+                    <div class="actions">
+                      <input type="submit" value="登録" class="btn btn-primary">
+                      <button type="button" class="btn btn-warning" data-dismiss="modal">キャンセル</button>
+                    </div>
+                  </div>                    
+                    }
+                    <!--  Form Ends -->
+
+                </div>
+              </div>
+            </div>
+            <!--  Modal Ends -->
+            }
+        </div>
+      }
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+}

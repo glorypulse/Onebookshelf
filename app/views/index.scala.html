@@ -1,0 +1,44 @@
+@()
+
+@main(title = "本棚アプリ - トップ") {
+
+<!-- ヘッダー -->
+@header(false)
+
+  <div class="container">
+  <div class="row">
+    <!-- コンテンツ -->
+    <div class="col-xs-12">
+      <div class="row">
+
+        <!-- 見出し -->
+        <div class="col-xs-12">
+          <h1 class="page-header">OneBookshelf</h1>
+        </div>
+
+        <div class="col-xs-12 col-sm-8 col-sm-push-2 text-center bg-info alert" style="padding-bottom: 35px;">
+        <h2>散らばっている本を、１つの本棚で管理しよう！</h2>
+        <p>私たちは、紙の本、Kindle、PDFなど、様々な形で本を手に取ることができます。</p>
+        <p>「えっ、あの本…紙で買ったんだっけ？　それともPDF…？」</p>
+        <p>そんな悩みを解決するために、「OneBookshelf」を使いましょう！</p>
+        </div>
+        <div class="col-xs-12 col-sm-8 col-sm-push-2">
+        <h3>特徴</h3>
+        <ul>
+        <li>あなたの持っている本のデータベースです。</li>
+        <li>本の基本データ+場所の登録が可能です。自分の持っている本を検索すれば、どこにあるかがわかります。</li>
+        <li>本の感想やメモを記載することができます。</li>
+        <li>本棚を共有している人の感想を見ることができます。（共有相手の選択は、今後実装予定です。）</li>
+        </ul>
+        </div>
+        <div class="col-xs-12">
+        <hr style="height:30px">
+          <ul class="list-unstyled">
+            <li class="col-xs-6 col-sm-3 col-sm-push-3 text-center"><a href="/login" class="btn btn-primary">ログインへ</a></li>
+            <li class="col-xs-6 col-sm-3 col-sm-push-3 text-center"><a href="/users/register" class="btn btn-warning">ユーザー登録へ</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+ </div></div>
+}

@@ -1,0 +1,89 @@
+@(shelf_group: List[(String, String)], booksCSVForm: Form[controllers.form.BooksCSV], regLs: List[controllers.form.BookSearch])
+
+@import helper._
+@implicitFieldConstructor = @{ b3.vertical.fieldConstructor }
+
+
+@main(title = "本棚アプリ - 本複数登録") {
+
+  @header(true)
+  
+  <div class="container">
+    <div class="row">
+  
+      @sidebar()
+  
+ 
+    <div class="col-xs-12 col-sm-9">
+      <div class="row">
+
+        <div class="col-xs-12">
+          <h1 class="page-header">本複数登録（CSVフォーム）</h1>
+        </div>
+        
+        @if(regLs.isEmpty && booksCSVForm.hasGlobalErrors && booksCSVForm.globalErrors.head.message != "") {
+          <div class="col-xs-12 alert alert-danger">
+            @for(error <- booksCSVForm.globalErrors) {
+              <p>@Html(error.message)</p>
+            }
+          </div>
+        }
+        <div class="col-xs-12">
+            <form action="/shelfs/books/CSV/upload" method="POST" class="form-horizontal" enctype ="multipart/form-data">
+
+              <input type="hidden" name="shelf_id" value="@shelf_group.head._1">
+              <div class="input-group">
+                <input type="file" id="file-input" name="bookscsv" style="display: none;">
+                <a class="btn input-group-addon file_open">
+                  <span class="glyphicon glyphicon-upload" aria-hidden="true"></span>
+                </a>
+                <a class="file_open">
+                  <span id="cover" class="form-control">csvファイルをアップロードしてください。</span>
+                </a>
+              </div>
+              <p>「キーワード（EAN, ISBNがオススメ）, 本の場所, 本のジャンル」で１行に１冊ずつ記入してください。</p>
+              
+              <div class="actions">
+                <input type="submit" class="btn btn-primary" value="アップロード">
+              </div>
+              </form>
+
+            @if(!regLs.isEmpty) {
+              <hr>
+              <hr class="sp">
+              <div class="alert alert-info">
+                <p>ファイル「@booksCSVForm.data("bookscsv")」の内容から、登録する本を@{regLs.size}件取得しました。</p>
+                <p>登録したい本にチェックをつけてください。</p></div>
+                
+              @if(booksCSVForm.hasGlobalErrors && booksCSVForm.globalErrors.head.message != "") {
+                <div class="alert alert-danger">
+                  @for(error <- booksCSVForm.globalErrors) {
+                    <p>@Html(error.message)</p>
+                  }
+                </div>
+              }
+              
+              @b3.form(controllers.shelf.routes.CSVBookController.registerCSV()) {
+                  <div class="uploaded">
+                <select multiple="multiple" id="register-books" name="books[]">
+                  @regLs.map{ regbook =>
+                  <option value="@regbook.ean">EAN @regbook.ean: 「@regbook.title」, @regbook.author , @regbook.year, @regbook.publish &gt;&gt;&gt; @regbook.place・@regbook.genre</option>
+                  }
+                </select>
+                </div>
+                
+                <div class="col-xs-12">
+                  @b3.select(booksCSVForm("shelf_id"), shelf_group, '_label -> "本棚選択")
+                </div>
+      
+                <div class="actions">
+                  <input type="submit" class="btn btn-primary">
+                  <a href="/books/search" class="btn btn-warning">キャンセル</a>
+                </div>
+              }
+            }
+        </div>
+      </div>
+    </div>
+ </div></div>
+}

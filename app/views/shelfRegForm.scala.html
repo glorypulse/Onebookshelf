@@ -1,0 +1,37 @@
+@(shelfRegForm: Form[controllers.form.ShelfReg])
+
+@import helper._
+
+@main(title = "本棚アプリ - 本棚登録（テスト用ページ）") {
+
+@header(true)
+
+　<div class="container">
+  <div class="row">
+
+    @sidebar()
+
+    <div class="col-xs-12 col-sm-9">
+      <div class="row">
+
+        <div class="col-xs-12">
+          <h1 class="page-header">本棚登録（テスト用ページ）</h1>
+        </div>
+
+        <div class="col-xs-12">
+          @form(controllers.shelf.routes.ShelfController.register()) {
+            <fieldset>
+              <input type="hidden" name="shelf_id" value="0">
+              @inputText(shelfRegForm("shelf_name"), '_label -> "本棚名称", 'size -> 40)
+              􏰑@select(shelfRegForm("privacy"), Seq(("0", "所有者のみ"), ("3", "指定者へ公開"), ("8", "全体公開")), '_label -> "公開設定")
+            </fieldset>
+            <div class="actions">
+              <input type="submit" class="btn btn-primary">
+              <a href="/books/search" class="btn btn-danger">キャンセル</a>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+ </div></div>
+}

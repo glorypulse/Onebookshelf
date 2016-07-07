@@ -1,0 +1,46 @@
+@(bookRegForm: Form[controllers.form.BookReg])
+
+@import helper._
+
+@main(title = "本棚アプリ - 本情報登録") {
+
+<!-- ヘッダー -->
+@header(true)
+
+<div class="row">
+  <div class="container">
+
+    <!-- サイドメニュー -->
+    @sidebar()
+
+    <!-- コンテンツ -->
+    <div class="col-xs-12 col-sm-9 col-md-9 col-lg-9">
+      <div class="row">
+
+        <!-- 見出し -->
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <h1>本情報登録（テスト用ページ）</h1>
+        </div>
+
+        <!-- フォーム -->
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          @form(controllers.bookmanage.routes.BookRegController.register()) {
+            <fieldset>
+              @inputText(bookRegForm("ean"), '_label -> "EAN", 'size -> 30)
+              @inputText(bookRegForm("title"), '_label -> "タイトル *", 'size -> 30)
+              @inputText(bookRegForm("author"), '_label -> "著者", 'size -> 30)
+              @inputText(bookRegForm("year"), '_label -> "発行年", 'size -> 30)
+              @inputText(bookRegForm("publish"), '_label -> "出版社", 'size -> 30)
+              <input type="hidden" name="series_name" value="">
+              <input type="hidden" name="series_no" value="">
+            </fieldset>
+            <div class="actions">
+              <input type="submit" class="btn btn-primary">
+              <a href="/books/search" class="btn btn-danger">キャンセル</a>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+ </div>
+}

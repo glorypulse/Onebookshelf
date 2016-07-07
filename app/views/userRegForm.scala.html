@@ -1,0 +1,50 @@
+@(userRegForm: Form[controllers.form.UserReg])(implicit flash: Flash)
+
+@import helper._
+@implicitFieldConstructor = @{ FieldConstructor(views.html.utils.twitterBootstrapField.f) }
+
+@main(title = "本棚アプリ - ユーザー登録") {
+
+@header(false)
+
+<div class="container">
+  <div class="row">
+
+    <div class="col-xs-12 col-sm-8 col-sm-push-2">
+    
+      <div class="row">
+        <div class="col-xs-12">
+          <h1 class="page-header">ユーザー登録</h1>
+        </div>
+      </div>
+
+        <div class="row">
+          <div class="col-xs-12">
+            @if(userRegForm.hasGlobalErrors || userRegForm.hasErrors) { 
+              <div class="alert alert-danger"><ul>
+              <li>@Messages("error.normal")</li>
+                @for(error <- userRegForm.globalErrors) {
+                  <li>@Messages(error.message)</li>
+                }
+              </ul></div>
+            }
+            @form(controllers.user.routes.UserRegController.register(),
+                  'class -> "form-horizontal") {
+              <fieldset>
+                @inputText(userRegForm("user_name"), 		'_label -> "ユーザ名", 'size -> 40)
+                @inputText(userRegForm("mail"), 			'_label -> "メールアドレス",  'size -> 40)
+                @inputPassword(userRegForm("password"), 		'_label -> "パスワード", 'size -> 40)
+                @inputPassword(userRegForm("password_con"), 	'_label -> "パスワード（確認用）", 'size -> 40)
+              </fieldset>
+              <div class="actions">
+                <input type="submit" class="btn btn-primary">
+                <a href="/books/search" class="btn btn-danger">キャンセル</a>
+              </div>
+            }
+          </div>
+        </div>
+        
+    </div>
+  </div>
+</div>
+}

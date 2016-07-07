@@ -1,0 +1,49 @@
+@(loginForm: Form[controllers.form.Login])(implicit lang: play.api.i18n.Lang)
+
+@import helper._
+@implicitFieldConstructor = @{ b3.horizontal.fieldConstructor("col-xs-12 col-sm-4 col-md-3", "col-xs-12 col-sm-8 col-md-9") }
+
+@main(title = "本棚アプリ - ログイン") {
+
+@header(false)
+
+<div class="container">
+  <div class="row">
+
+        <div class="col-xs-12 col-sm-8 col-sm-push-2">
+          <h1 class="page-header">ログイン</h1>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-xs-12 col-sm-8 col-sm-push-2 col-lg-6 col-lg-push-3">
+          @if((loginForm.hasGlobalErrors || loginForm.hasErrors) && !loginForm.globalErrors.filterNot(_.message.contains("info")).isEmpty) { 
+            <div class="alert alert-danger"><ul class="list-unstyled">
+            @if(!loginForm.hasGlobalErrors) { <li>@Messages("error.normal")</li> }
+              @for(error <- loginForm.globalErrors.filterNot(_.message.contains("info"))) {
+                <li>@Messages(error.message)</li>
+              }
+            </ul></div>
+          }
+          @if(loginForm.hasGlobalErrors && !loginForm.globalErrors.filter(_.message.contains("info")).isEmpty) {
+          <div class="alert alert-info"><ul class="list-unstyled">
+            @for(info <- loginForm.globalErrors.filter(_.message.contains("info"))) {
+              <li>@Messages(info.message)</li>
+            }
+          </ul></div>
+          }
+          @b3.form(controllers.user.routes.LoginController.login()) {
+            <fieldset>
+              @b3.text(loginForm("mail"),		 		'_label -> "メールアドレス",	'size -> 40)
+              <hr class="sp">
+              @b3.password(loginForm("password"), 	'_label -> "パスワード", 		'size -> 40)
+            </fieldset>
+            <div class="actions col-sm-8 col-sm-push-4 col-md-9 col-md-push-3">
+              <input type="submit" class="btn btn-primary">
+              <input type="reset" class="btn btn-warning" value="キャンセル">
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+}

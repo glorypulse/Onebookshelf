@@ -1,6 +1,6 @@
-蔵書管理アプリケーション　Onebookshelf
+蔵書管理アプリケーション　Onebookshelf
 ====
-Let's manage ALL of your books in ONE bookshelf!
+「すべての蔵書を管理できる本棚」
 
 ## 特徴
 - あなたの持っている本のデータベースを作ることができます。
@@ -19,6 +19,9 @@ https://onebookshelf-160623.herokuapp.com/
 - デプロイ先：Heroku
 - 開発環境インフラ：Mac OS X El Capitan, Vagrant(Virtual Box), Chef, FreeBSD 10.0
 
-## ソースコード
-- 2ファイルを除いてあります。
-- 2016/6/23時点で、スプリント開発２クール終了時点の状態です。（ver 0.2.0）
+## 添付ファイルについて
+　Scalaソースコードを2ファイルを除き添付しています。
+
+　2016/6/23時点で、スプリント開発２クール終了時点の状態です。（ver 0.2.0）
+
+　開発期間は、2015/11〜2016/6で、約80時間です。

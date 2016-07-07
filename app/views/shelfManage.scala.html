@@ -1,0 +1,242 @@
+@(shelf : controllers.form.ShelfManage, gp_map: (Seq[(String, String)], Seq[(String, String)]),
+   shelfForm : Form[controllers.form.ShelfManage],
+   placeForms : (Form[controllers.form.PlaceAdd], Form[controllers.form.PlaceEdit], Form[controllers.form.PlaceDel]),
+   genreForms : (Form[controllers.form.GenreAdd], Form[controllers.form.GenreEdit], Form[controllers.form.GenreDel]))
+
+@import helper._
+@* implicitFieldConstructor = @{ FieldConstructor(views.html.utils.twitterBootstrapInput.f) } *@
+@implicitField = @{ b3.horizontal.fieldConstructor("col-xs-12 col-sm-2", "col-xs-12 col-sm-10") }
+
+@genre_map = @{gp_map._1}
+@place_map = @{gp_map._2}
+@placeAddForm = @{ placeForms._1 }
+@placeEditForm = @{ placeForms._2 }
+@placeDelForm = @{ placeForms._3 }
+@genreAddForm = @{ genreForms._1 }
+@genreEditForm = @{ genreForms._2 }
+@genreDelForm = @{ genreForms._3 }
+
+@main(title = "本棚アプリ - 本棚管理") {
+
+@header(true)
+  <div class="container">
+    <div class="row">
+  
+      @sidebar()
+  
+ 
+    <div class="col-xs-12 col-sm-9">
+      <div class="row">
+
+        <div class="col-xs-12">
+          <h1 class="page-header">本棚管理</h1>
+        </div>
+      </div>
+      <div class="row">
+      @if(shelfForm.hasGlobalErrors || shelfForm.hasErrors || 
+          placeAddForm.hasGlobalErrors || placeAddForm.hasErrors || placeEditForm.hasGlobalErrors || placeEditForm.hasErrors || placeDelForm.hasGlobalErrors || placeDelForm.hasErrors || 
+          genreAddForm.hasGlobalErrors || genreAddForm.hasErrors || genreEditForm.hasGlobalErrors || genreEditForm.hasErrors || genreDelForm.hasGlobalErrors || genreDelForm.hasErrors) { 
+        <div class="col-xs-12 alert alert-danger"><ul class="list-unstyled">
+          @for(error <- (shelfForm.globalErrors ++ placeAddForm.globalErrors ++ placeEditForm.globalErrors ++ placeDelForm.globalErrors ++ 
+                         genreAddForm.globalErrors ++ genreEditForm.globalErrors ++ genreDelForm.globalErrors)) {
+            <li>@Messages(error.message)</li>
+          }
+        </ul></div>
+      }
+      
+        <div class="row">
+        <div class="col-xs-12">
+          @b3.form(controllers.shelf.routes.ShelfController.update(shelf.shelf_id)) { 
+            <fieldset>
+              <input type="hidden" name="shelf_id" value="@shelf.shelf_id">              
+              @b3.text(shelfForm("shelf_name"), '_label -> "本棚名", 'width -> 400)
+
+              <!-- @b3.checkbox(shelfForm("def_flag_d"), 'checked -> "true", 'disabled -> "true", 'value -> common.OBSConstants.DefaultShelf, '_label -> "デフォルト") -->
+              <input type="hidden" name="def_flag" value="@shelf.def_flag">
+              
+              <!-- 􏰑@b3.select(shelfForm("privacy"), Seq(("0", "所有者のみ"), ("3", "指定者へ公開"), ("8", "全体公開")), '_label -> "公開設定") -->
+              <input type="hidden" name="privacy" value="@shelf.privacy">
+              
+              </fieldset>
+              
+            <div class="form-group">
+              <div class="col-xs-12 col-sm-offset-2 col-sm-10 text-right">
+                <input type="submit" class="btn btn-primary" value="本棚名変更">
+                <!-- <a href="/books/search" class="btn btn-danger">キャンセル</a> -->
+              </div>
+            </div>
+           }
+                      
+            <div class="col-xs-12" style="height:30px"><hr /></div>  
+              
+              <div class="form-horizontal">
+                <label class="col-xs-12 col-sm-2 control-label">保管場所</label>
+                <div class="col-xs-12 col-sm-10">
+
+                    
+                    <ul class="list-group">
+                    
+                    <li class="list-group-item btnbg small"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span>&nbsp編集したい場合は、場所名をクリックしてください。</li>
+                        <li class="list-group-item">@place_map.head._2</li>
+                    @place_map.filterNot(_._1 == common.OBSConstants.DefaultGPID.toString).map { place_tup =>
+                        <li class="list-group-item gplist" id="place_@place_tup._1" onclick="document.getElementById('pmodal@place_tup._1').click()">@place_tup._2</li>
+                    }
+                      <li class="list-group-item btnbg">
+                      @b3.horizontal.form(controllers.shelf.routes.ShelfController.registerPlace(shelf.shelf_id), "", "col-xs-12") { implicit hfc =>
+                      <div class="row">
+                      <fieldset>
+                      <div class="col-xs-10 col-md-11">
+                      <input type="hidden" name="shelf_id" value="@shelf.shelf_id">                      
+                        @b3.text(placeAddForm("place_name"), '_hiddenLabel -> "場所の追加", 'placeholder -> "追加する")
+                      </div>
+
+                      <div class="col-xs-2 col-md-1 btnpad">
+                      <button class="btn btn-primary"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+                      </div>
+                      </fieldset>
+                      </div>                      
+                      }
+
+                      </li>
+                    </ul>
+
+                <div class="list-group">
+                    <div class="row">
+                      @b3.horizontal.form(controllers.shelf.routes.ShelfController.removePlace(shelf.shelf_id), "", "col-xs-12", 'id -> "delPlace") { implicit hfc=>
+                      <div class="col-xs-10 col-md-11">
+                      
+                        <fieldset>
+                        <input type="hidden" name="shelf_id" value="@shelf.shelf_id">
+                        @b3.select(placeDelForm("place_id"), place_map.filterNot(_._1 == common.OBSConstants.DefaultGPID.toString),
+                         '_hiddenLabel -> "削除する", '_default -> " --削除したい保管場所を選択-- " , 'class -> "")
+                         </fieldset>      
+                       </div>
+                      <div class="col-xs-2 col-md-1 btnpad">
+                        <input type="submit" class="btn btn-danger" onclick="return delPlace();" value="削除">
+                      </div>
+                      }                
+                  </div>
+                </div>
+                </div>                
+              
+              </div>                    
+              
+              <div class="col-xs-12" style="height:30px"><hr /></div>  
+              <div class="form-horizontal">
+                <label class="col-xs-12 col-sm-2 control-label">ジャンル</label>
+                <div class="col-xs-12 col-sm-10">
+                    <ul class="list-group">
+                    <li class="list-group-item btnbg small"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span>&nbsp編集したい場合は、ジャンル名をクリックしてください。</li>
+                        <li class="list-group-item">@genre_map.head._2</li>
+                    @genre_map.filterNot(_._1 == common.OBSConstants.DefaultGPID.toString).map { genre_tup =>
+                        <li class="list-group-item gplist" id="genre_@genre_tup._1" onclick="document.getElementById('pmodal@genre_tup._1').click()">@genre_tup._2</li>
+                    }
+                    <li class="list-group-item btnbg">
+                    @b3.horizontal.form(controllers.shelf.routes.ShelfController.registerGenre(shelf.shelf_id), "", "col-xs-12") { implicit hfc=>
+                    <div class="row">
+                    <fieldset>
+                    <div class="col-xs-10 col-md-11">
+                      <input type="hidden" name="shelf_id" value="@shelf.shelf_id">
+                      @b3.text(genreAddForm("genre_name"), '_hiddenLabel -> "ジャンルの追加", 'placeholder -> "追加する")
+                    </div>
+                    <div class="col-xs-2 col-md-1 btnpad">
+                      <button class="btn btn-primary"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+                    </div>
+                    </fieldset>
+                    </div>
+                    }
+                    </li></ul>
+
+                    <div class="list-group">
+                      <div class="row">
+                      @b3.horizontal.form(controllers.shelf.routes.ShelfController.removeGenre(shelf.shelf_id),"", "col-xs-12", 'id -> "delGenre") { implicit hfc=>
+                      <div class="col-xs-10 col-md-11">
+                    
+                    <fieldset>
+                      <input type="hidden" name="shelf_id" value="@shelf.shelf_id">
+                      @b3.select(genreDelForm("genre_name"), genre_map.filterNot(_._1 == common.OBSConstants.DefaultGPID.toString),
+                       '_hiddenLabel -> "削除する", '_default -> " --削除したいジャンルを選択-- " , 'class -> "")
+                    </fieldset>
+                    </div>
+                      <div class="col-xs-2 col-md-1 btnpad">
+                        <input type="submit" class="btn btn-danger" onclick="return delGenre();" value="削除">
+                      </div>
+                    }
+                    </div>
+                    </div>
+                </div>
+              </div>
+
+        <!--  Place Modal window -->
+         @place_map.map{ place_tup =>
+        <button type="button" style="visibility:hidden;" data-toggle="modal" data-target="#placeModal@place_tup._1" id="pmodal@place_tup._1"></button>
+        <div class="modal fade" id="placeModal@place_tup._1" tabindex="-1" role="dialog" aria-labelledby="label_placeModal@place_tup._1">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span><span class="sr-only">閉じる</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">場所「@place_tup._2」の変更</h4>
+                  </div>
+                    @b3.horizontal.form(controllers.shelf.routes.ShelfController.updatePlace(shelf.shelf_id), "", "col-xs-12") { implicit hfc =>                  
+                  <div class="modal-body">
+
+                          <input type="hidden" name="shelf_id" value="@shelf.shelf_id">
+                          <input type="hidden" name="place_id" value="@place_tup._1">
+                          @b3.text(placeEditForm("place_name"), '_hiddenLabel -> place_tup._2, 'value -> place_tup._2)
+
+                  </div>
+                  <div class="modal-footer">
+                    <div class="actions">
+                      <input type="submit" value="修正" class="btn btn-primary">
+                      <button type="button" class="btn btn-warning" data-dismiss="modal">キャンセル</button>
+                    </div>
+                 </div>
+                    }
+                    <!--  Form Ends -->
+
+                </div>
+              </div>
+            </div>
+            }<!--  Modal Ends -->
+            
+         <!--  Genre Modal window -->
+         @genre_map.map{ genre_tup =>
+        <button type="button" style="visibility:hidden;" data-toggle="modal" data-target="#genreModal@genre_tup._1" id="pmodal@genre_tup._1"></button>
+        <div class="modal fade" id="genreModal@genre_tup._1" tabindex="-1" role="dialog" aria-labelledby="label_genreModal@genre_tup._1">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span><span class="sr-only">閉じる</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">ジャンル「@genre_tup._2」の変更</h4>
+                  </div>
+                    @b3.horizontal.form(controllers.shelf.routes.ShelfController.updateGenre(shelf.shelf_id), "", "col-xs-12") { implicit hfc =>                  
+                  <div class="modal-body">
+                          <input type="hidden" name="shelf_id" value="@shelf.shelf_id">
+                          <input type="hidden" name="genre_id" value="@genre_tup._1">
+                          @b3.text(genreEditForm("genre_name"), '_hiddenLabel -> genre_tup._2, 'value -> genre_tup._2)
+
+                  </div>
+                  <div class="modal-footer">
+                    <div class="actions">
+                      <input type="submit" value="修正" class="btn btn-primary">
+                      <button type="button" class="btn btn-warning" data-dismiss="modal">キャンセル</button>
+                    </div>
+                  </div>
+                    <!--  Form Ends -->                  
+                 }
+                </div>
+              </div>
+            </div>
+            }<!--  Modal Ends -->
+
+
+
+        </div>
+      </div>
+    </div>
+ </div></div></div>
+}

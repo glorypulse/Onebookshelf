@@ -1,0 +1,65 @@
+@(word: String, books: List[models.db.Book])
+
+@main(title = "本棚アプリ - 本情報登録結果") {
+
+@header(true)
+
+<div class="container">
+  <div class="row">
+
+	@sidebar()
+
+    <div class="col-xs-12 col-sm-9">
+    
+      <div class="row">
+        <div class="col-xs-12">
+          <h1 class="page-header">本情報登録結果</h1> 
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+        <div class="alert alert-info">
+            @if(!word.isEmpty) { <p> @word </p> }            
+            <p>以下の@(books.size)件登録しました。</p>
+        </div>
+        <!-- テーブル -->
+        <div class="table-responsive col-xs-12 col-sm-12 col-md-12 col-lg-12">
+          <table class="table table-bordered table-striped ">
+            <thead>
+              <tr>
+                <!-- <th>本ID</th> -->
+<!--                 <th>シリーズID</th> -->
+                <th>タイトル</th>
+                <th>作者</th>
+                <th>出版社</th>
+                <th>EAN</th>
+                <!-- <th>シリーズ番号</th> -->
+                <!--  <th align="center"></th> -->
+              </tr>
+            </thead>
+            <tbody>
+            @books.map{ book =>
+              <tr>
+<!-- not need                <td>@book.book_id</td> -->
+<!-- null               <td>@book.series_id</td> -->
+                <td>@book.title</td>
+                <td>@book.author</td>
+                <td>@book.publish</td>
+                <td>@book.ean</td>                
+                <!--  <td>@book.series_no</td> -->
+                <!-- <td align="center">
+                  <a href="/books/@book.book_id/update" class="btn btn-primary">更新</a>
+                  <input type="button" class="btn btn-danger" value="削除" onClick='if(confirm("本当に削除してよろしいですか？")) {location.href="/books/@book.book_id/remove"}'>
+                </td> -->
+              </tr>
+            }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    @back("") 
+    
+    </div>
+ </div></div>
+}
