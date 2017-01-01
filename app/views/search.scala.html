@@ -1,4 +1,4 @@
-@(user_id: Long, word: String, localbooks: List[controllers.form.BookSearch], books: List[controllers.form.BookSearch],
+@(user_id: Long, shelf_id: Long, word: String, localbooks: List[controllers.form.BookSearch], books: List[controllers.form.BookSearch],
   gp_map: (Seq[(String, String)], Seq[(String, String)]),
   bsForm: Form[controllers.form.BookSearch])
 
@@ -13,7 +13,7 @@
 <div class="container">
   <div class="row">
 
-  @sidebar()
+  @sidebar(shelf_id)
 
   <div class="col-xs-12 col-sm-9">
   
@@ -26,17 +26,20 @@
     
     <!-- 検索フォーム -->
     <div class="row">
-      <div class="col-xs-12">
+      <div class="col-xs-12 col-sm-10 col-md-9 col-lg-8">
         @form(action=controllers.search.routes.BookController.searchMyBook(user_id),
-        'class -> "form-inline", 'role -> "search") {
-        <div class="form-group">
-          <label class="sr-only" for="keyword">キーワード入力</label>
+        'class -> "", 'role -> "search") {
+        <label class="sr-only" for="keyword">キーワード入力</label>
+        <div class="input-group">
           <input type="search" name="word" value="@word" class="form-control" placeholder="キーワード/EAN/ASINを入力してください" id="keyword" size="60">
-        </div>
-        <div class="form-group">
-          <input type="submit" value="本を検索する" class="btn btn-info">
+          <span class="input-group-btn">
+          	<input type="submit" value="本を検索する" class="btn btn-info">
+          </span>
         </div>
         }
+      </div>
+      <div class="col-xs-12 col-sm-2 col-md-3 col-lg-4">
+      	<a href="/books/search/all" class="btn btn-primary">全件<span class="hidden-sm">表示</span></a>
       </div>
     </div>
 
@@ -69,26 +72,30 @@
         }
         <div class="row">
           <!-- <div class="col-xs-12">
-            <h3>本棚の中</h3>
+            <h3 class="dogear">本棚の中</h3>
           </div> -->
         </div>
         <div class="row">
           <div class="col-xs-12">
           <div class="book_carousel" style="width:100%;margin-left:auto;margin-right:auto;">
           @localbooks.map{ book =>
+          <div class="book_sheet">
           <div class="book_tile">
-            <img src="@book.img_url" alt="画像" class="img-thumbnail book_img">
-            <p class="book_kindle">@if(book.product=="eBooks"){<span class="book_kindle_text bg-info">[Kindle]</span>}</p>
-            <p class="text-primary book_title">@book.title</p>
-            <p class="book_author">@book.author</p>
-            <p>@book.place</p>
-            @form(action=controllers.search.routes.BookDetailController.showBook()) {
-              <input type="hidden" name="book_id" value="@book.book_id" />
-              <input type="hidden" name="shelf_id" value="@book.shelf_id" />
-              <input type="submit" value="詳細" class="btn btn-info" />
-            }
-            <!-- <input type="button" class="btn btn-danger" value="削除" onClick='if(confirm("本当に削除してよろしいですか？")) {location.href="/books/@book.book_id/remove"}'> -->
-          </div>
+          	<a href="/@book.shelf_id/books/@book.book_id"><div class="book_cover">
+	          	@if(book.product=="eBooks"){<div class="book_kindle"><span class="book_kindle_text bg-info">[Kindle]</span></div>}
+	            <img src="@book.img_url" alt="画像" class="book_img">
+	            <p class="text-primary book_title">@book.title</p>
+	            <p class="book_author">@book.author</p>
+	            <p>@book.place</p>
+	            <!-- 
+	            @form(action=controllers.search.routes.BookDetailController.showBook()) {
+	              <input type="hidden" name="book_id" value="@book.book_id" />
+	              <input type="hidden" name="shelf_id" value="@book.shelf_id" />
+	              <input type="submit" value="詳細" class="btn btn-info" />
+	            }
+	            <input type="button" class="btn btn-danger" value="削除" onClick='if(confirm("本当に削除してよろしいですか？")) {location.href="/books/@book.book_id/remove"}'> -->
+          	  </div></a>
+          	</div></div>
           }
           </div>
         </div>
@@ -98,7 +105,7 @@
           <div class="row">
             <div class="col-xs-12">
               <hr>
-              <h3>本棚にない本</h3>
+              <h3 class="dogear">本棚にない本</h3>
             </div>
           </div>
 
@@ -107,13 +114,17 @@
           <div class="col-xs-12">
           <div class="book_carousel" style="width:100%;margin-left:auto;margin-right:auto;">
           @books.map{ book =>
-          <div class="book_tile">
-            <a href="@book.amazon_url" target="_blank"><img src="@if(!book.img_url.isEmpty){ @book.img_url }else{ /assets/images/book_dummy.png }"
-               alt="@book.title"  class="img-thumbnail book_img"></a>
-            <p class="book_kindle">@if(book.product=="eBooks"){<span class="book_kindle_text bg-info">[Kindle]</span>}</p>
-            <p class="text-primary book_title">@book.title</p>
-            <p class="book_author">@book.author</p>
-
+          <div class="book_sheet">
+	          <div class="book_tile">
+	          	<a href="@book.amazon_url" target="_blank"><div class="book_cover">
+		          	@if(book.product=="eBooks"){<div class="book_kindle"><span class="book_kindle_text bg-info">[Kindle]</span></div>}
+		            <img src="@if(!book.img_url.isEmpty){@book.img_url}else{/assets/images/book_dummy.png}"
+		               alt="@book.title"  class="img-thumbnail book_img">
+		            
+		            <p class="text-primary book_title">@book.title</p>
+		            <p class="book_author">@book.author</p>
+	            </div></a>
+			  </div>
             <button type="button" class="btn btn-primary" onclick="document.getElementById('modal@book.asin').click()">登録</button>
           </div>
           }

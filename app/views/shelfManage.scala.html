@@ -22,7 +22,7 @@
   <div class="container">
     <div class="row">
   
-      @sidebar()
+      @sidebar(shelf.shelf_id)
   
  
     <div class="col-xs-12 col-sm-9">
@@ -154,7 +154,7 @@
                     
                     <fieldset>
                       <input type="hidden" name="shelf_id" value="@shelf.shelf_id">
-                      @b3.select(genreDelForm("genre_name"), genre_map.filterNot(_._1 == common.OBSConstants.DefaultGPID.toString),
+                      @b3.select(genreDelForm("genre_id"), genre_map.filterNot(_._1 == common.OBSConstants.DefaultGPID.toString),
                        '_hiddenLabel -> "削除する", '_default -> " --削除したいジャンルを選択-- " , 'class -> "")
                     </fieldset>
                     </div>

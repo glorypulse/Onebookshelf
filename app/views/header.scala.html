@@ -13,7 +13,7 @@
     <div class="navbar-collapse collapse" id="headerNav">
       <ul class="nav navbar-nav" role="menu">
       @if(isLogin) {
-        <li><a role="menuitem" href="/books/search">本棚を見る</a></li>
+        <li><a role="menuitem" href="/books/search/all">本棚を見る</a></li>
         <li><a role="menuitem" href="/shelfs/update">本棚を管理する</a></li>
       } else {
         <li><a role="menuitem" href="/users/register">ユーザー登録</a></li>
@@ -21,12 +21,14 @@
       </ul>
 
       @if(isLogin) {
-      <form action="􏰒controllers.search.routes.BookController.search()"
+      <form action="@controllers.search.routes.BookController.search()"
         method="POST" class="navbar-form navbar-right" role="search">
-        <div class="form-group">
+        <div class="input-group">
           <input type="search" name="word" value="" class="form-control" placeholder="キーワードを入力">
+          <span class="input-group-btn">
+        	<input type="submit" value="検索" class="btn btn-info">
+          </span>
         </div>
-        <input type="submit" value="検索" class="btn btn-info">
       </form>
 
       <ul class="nav navbar-nav navbar-right">

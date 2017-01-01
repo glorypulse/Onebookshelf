@@ -31,7 +31,7 @@ object LoginController extends Controller with controllers.Secured{
     request.session.get(Security.username) match {
       case Some(userid) => {
         //OBSCache.setGlobalError(userid.toLong, "info.already")
-        Redirect(controllers.search.routes.BookController.search(""))
+        Redirect(controllers.search.routes.BookController.searchAll())
       }
       case None         => Ok(views.html.login(loginForm))
     }

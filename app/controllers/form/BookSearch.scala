@@ -11,7 +11,7 @@ import play.api.data.Forms._
 case class BookSearch(series_name: String, title: String, author: String,
     publish: String, genre: String, place: String, book_id : String, shelf_id : Long,
     year: Int, amazon_url: String, asin: String, product: String, isbn: String, ean: String,
-    img_url: String)
+    img_url: String, update_date: java.util.Date)
 
     
 object BookSearchForm {
@@ -31,7 +31,8 @@ object BookSearchForm {
           "product" -> text,
           "isbn" -> text(maxLength = 13),
           "ean" -> text(maxLength = 13),
-          "img_url" -> text
+          "img_url" -> text,
+          "update_date" -> date
           )(BookSearch.apply)(BookSearch.unapply)
       )
 }

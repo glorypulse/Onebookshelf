@@ -284,10 +284,10 @@ object ShelfController extends Controller with controllers.Secured{
   }, { user_id => implicit rs =>
     genreDelForm.bindFromRequest.fold(
         errors => {
-        val gp_map = GPProvider.getGPMap(shelf_id)
-        val shelfManage = getShelfManageCase(user_id, shelf_id)
-        val genreForms = (genreAddForm, genreEditForm , errors.withGlobalError("error.normal"))
-        BadRequest(views.html.shelfManage(shelfManage, gp_map, shelfForm, placeForms, genreForms))
+          val gp_map = GPProvider.getGPMap(shelf_id)
+          val shelfManage = getShelfManageCase(user_id, shelf_id)
+          val genreForms = (genreAddForm, genreEditForm , errors.withGlobalError("error.normal"))
+          BadRequest(views.html.shelfManage(shelfManage, gp_map, shelfForm, placeForms, genreForms))
         },
         genre_data => DB.withSession { implicit session =>
             val genre_id = genre_data.genre_id

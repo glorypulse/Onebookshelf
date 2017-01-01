@@ -100,7 +100,7 @@ object BookDetailController extends Controller with controllers.Secured{
              val gpForm_bind = OBSCache.getGlobalErrorWithForm[controllers.form.BookGP](user_id, gpForm).bind(gp_id)
              OBSCache.removeGlobalError(user_id)
              
-             Ok(views.html.bookDetail(bookDetail, mycomment, myCommentForm, gpForm_bind, gpMap))             
+             Ok(views.html.bookDetail(shelf_id, bookDetail, mycomment, myCommentForm, gpForm_bind, gpMap))             
              
              
              

@@ -37,5 +37,10 @@ object OBSConstants {
   val DefaultGPID = "0" * 32
   val DefaultGPName = "未分類"
   val DefaultGPNum = 0
+  
+  // Listing / Search All Books
+  val Listing = List("updated", "genre", "author", "title")
+  val DefaultListing = Listing(0)
+  
 
 }

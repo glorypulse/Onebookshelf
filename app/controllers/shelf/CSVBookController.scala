@@ -73,9 +73,9 @@ object CSVBookController extends Controller with controllers.Secured {
                 // if (input_isbn.takeRight(10).equals(book.isbn.takeRight(10))) { // 正しい本が検索できているか確認...EANで比較する必要あり
                   regLs = regLs :+ (cols.size match {
                     case n if n > 2 =>  BookSearch(book.series_name, book.title, book.author, book.publish,
-                        cols(2), cols(1), book.book_id, book.shelf_id, book.year, book.amazon_url, book.asin, book.product, book.isbn, book.ean, book.img_url)
+                        cols(2), cols(1), book.book_id, book.shelf_id, book.year, book.amazon_url, book.asin, book.product, book.isbn, book.ean, book.img_url, book.update_date)
                     case 2 =>  BookSearch(book.series_name, book.title, book.author, book.publish,
-                        book.genre, cols(1), book.book_id, book.shelf_id, book.year, book.amazon_url, book.asin, book.product, book.isbn, book.ean, book.img_url)
+                        book.genre, cols(1), book.book_id, book.shelf_id, book.year, book.amazon_url, book.asin, book.product, book.isbn, book.ean, book.img_url, book.update_date)
                     case _ =>  book
                   })
                 // } else {
@@ -148,7 +148,8 @@ object CSVBookController extends Controller with controllers.Secured {
                 
                 
                 if(!LocalBookDAO.existsByID(shelf_id, book.book_id)) {
-                  LocalBookDAO.register(LocalBook(shelf_id, book.book_id, genre_id, place_id, "", null, user_id))
+                  LocalBookDAO.register(LocalBook(shelf_id, book.book_id, genre_id, place_id, "",
+                                                  null, user_id, null, user_id))
                   regedBooks = regedBooks :+ book
                 } // TODO エラーメッセージなし
 

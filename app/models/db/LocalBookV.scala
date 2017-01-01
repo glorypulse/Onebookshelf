@@ -11,7 +11,7 @@ import java.sql.Date
 /**
  * DTOの定義
  */
-case class LocalBookV(shelf_id : Long, book_id : String, genre_id : String, place_id : String, abst : String, reg_date: Date, reg_user: Long,
+case class LocalBookV(shelf_id : Long, book_id : String, genre_id : String, place_id : String, abst : String, update_date: Date, reg_date: Date, reg_user: Long,
     ean: String, isbn: String, title: String, author: String, year: Int, publish: String, series_id: Option[Long], series_no: Option[Int],
     amazon_url: String, asin: String, product: String, img_url: String,
     genre_name: String, place_name: String)
@@ -26,6 +26,7 @@ class LocalBookView(tag: Tag) extends Table[LocalBookV](tag, "LocalBookV") {
   def genre_id = column[String]("genre_id")
   def place_id = column[String]("place_id")
   def abst = column[String]("abst")
+  def update_date = column[Date]("update_date")  
   def reg_date = column[Date]("reg_date")
   def reg_user = column[Long]("reg_user")
   
@@ -46,7 +47,7 @@ class LocalBookView(tag: Tag) extends Table[LocalBookV](tag, "LocalBookV") {
   def place_name = column[String]("place_name")
 
   
-  def * = (shelf_id, book_id, genre_id, place_id, abst, reg_date, reg_user,
+  def * = (shelf_id, book_id, genre_id, place_id, abst, update_date, reg_date, reg_user,
           ean, isbn, title, author, year, publish, series_id, series_no,
           amazon_url, asin, product, img_url, genre_name, place_name) <> (LocalBookV.tupled, LocalBookV.unapply)
   
@@ -95,17 +96,17 @@ object LocalBookViewDAO {
 
 
   /**
-   * 本棚のすべての本検索(idの昇順)
+   * 本棚のすべての本検索(更新順)
    */
   def searchAll(shelf_id: Long)(implicit s: Session): List[LocalBookV] = {
-    localbookView.filter(_.shelf_id === shelf_id).sortBy(_.reg_date.desc).list
+    localbookView.filter(_.shelf_id === shelf_id).sortBy(_.update_date.desc).list
   }
   
   /**
-   * 本棚のすべての本検索　最新登録5件
+   * 本棚のすべての本検索　最新更新5件
    */
   def search5Desc(shelf_id: Long)(implicit s: Session): List[LocalBookV] = {
-    localbookView.filter(_.shelf_id === shelf_id).sortBy(_.reg_date.desc).list.take(5)
+    localbookView.filter(_.shelf_id === shelf_id).sortBy(_.update_date.desc).list.take(5)
   }
 
   /**

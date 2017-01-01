@@ -67,7 +67,8 @@ object BookShelfController extends Controller with controllers.Secured {
     
     DB.withSession { implicit session =>
       OBSCache.removeLocalBookLs(user_id, shelf_id)
-      LocalBookDAO.register(LocalBook(shelf_id, book_id, genre_id, place_id, "", null, user_id))
+      LocalBookDAO.register(LocalBook(shelf_id, book_id, genre_id, place_id, "",
+                                      null, user_id, null, user_id))
       Ok(views.html.bookmanage.result("", BookDAO.searchByID(book_id)))
     }
 	}

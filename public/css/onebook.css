@@ -1,0 +1,286 @@
+@charset 'UTF-8';
+
+/* *******************
+ *  Common
+ * ******************* */
+ 
+ /*** dog ear ***/
+h3.dogear {
+	font-size: 20px;
+	position: relative;
+	padding: 1em 4em 1em 1em;
+	-webkit-background: linear-gradient(-155deg, rgba(0, 0, 0, 0) 1.5em, #F7E8D4 0%);
+	background: linear-gradient(-155deg, rgba(0, 0, 0, 0) 1.5em, #F7E8D4 0%);
+	border-radius: 6px;
+}
+h3.dogear::after {
+	position: absolute;
+	top: 0;
+	right: 0;
+	content: '';
+	width: 1.65507em;
+	height: 3.5493em;
+	background: -webkit-linear-gradient(to left bottom, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, .1) 0%, rgba(0, 0, 0, .2));
+	background: linear-gradient(to left bottom, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, .1) 0%, rgba(0, 0, 0, .2));
+	border-bottom-left-radius: 6px;
+	box-shadow: -.2em .2em .3em -.1em rgba(0, 0, 0, .15);
+	-webkit-transform: translateY(-1.89424em) rotate(-40deg);
+	transform: translateY(-1.89424em) rotate(-40deg);
+	-webkit-transform-origin: bottom right;
+	transform-origin: bottom right;
+}
+ 
+ 
+.sp {
+	margin:0;
+	padding: 0;
+	height: 15px;
+	border: 0;
+}
+
+.sp:before,
+.sp:after {
+    content: " ";
+    display: table;
+}
+
+.sp:after {
+    clear: both;
+}
+
+.sp {
+    *zoom: 1;
+}
+
+.list-group-item .form-group {
+	margin-bottom: 0px;
+}
+
+/* *******************
+ *  book_search
+ * ******************* */
+
+.book_sheet {
+  	width: 160px;
+  	border: 2px #C6BAA9 solid;
+	
+	/* margin-left: 3px;
+	margin-right: 3px; */
+}
+.book_tile {
+  padding: 3px;
+  position: relative;
+  border: 4px #A8B4C4 solid;
+  border-radius:7px;
+  background-color: #A8B4C4;
+}
+
+.book_cover {
+  padding: 3px;
+  background-color: #fff;
+  border-radius:5px;
+  
+}
+
+.book_cover:hover {
+  background-color: #BCC9DB;
+  cursor: pointer;    
+}
+
+.book_tile p {
+  margin: 0;
+}
+
+.book_tile a {
+  text-decoration: none;
+}
+
+.book_sheet .btn {
+  width: 100%;
+}
+
+.book_img {
+	width:auto;
+  max-width: 100%;
+	height:200px;
+	margin-left:auto;
+	margin-right:auto;
+  margin-bottom: 5px;
+  border: #fff;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
+.book_kindle {
+	height:15px;
+  position: absolute;
+}
+
+.book_kindle_text {
+	font-size:12px;
+}
+.book_title {
+	font-size:14px;
+  font-weight:bold;
+	overflow: hidden;
+  height: 28px;
+   line-height: 1.0em;
+}
+
+.book_author {
+	font-size:12px;
+	height: 17px;
+	overflow: hidden;
+}
+
+/* *******************
+ *  book_detail
+ * ******************* */
+ .b_edit {
+	width: 34px;
+	padding: 6px;
+}
+
+.b_cancel {
+  min-width: 89px;
+	display:none;
+}
+
+.b_submit {
+	width: 54px;
+	display:none;
+}
+
+.bookinfo h1 {
+  font-size:2em;
+  font-weight:bold;
+}
+
+.bookinfo .editbtn {
+    text-align:right;
+	padding: 0px 15px;
+}
+
+.bookinfo  .editbtn>button {
+	margin: 15px 0px 3px 0px;
+	height: 36px;
+}
+
+
+.gp.Form {
+	display: none;
+}
+
+.gp.Form td:nth-child(2) {
+	padding: 4px 8px;
+}
+.gp .form-group {
+	margin: 0;
+}
+
+.gp .form-control {
+	height: 27px;
+}
+
+
+
+ 
+.usercomment {
+	/*background-color:#bce8f1; /* TODO 仮*/
+}
+.usercomment > div.panel-heading {
+    position: relative;
+    height: 47px;
+}
+
+.usercomment > div.panel-heading > h3 {
+    position: absolute;
+}
+
+.usercomment > div.panel-heading > div {
+    position: absolute;
+    right: 10px;
+    top: 7px;
+    width: 160px;
+    text-align:right;
+}
+
+.usercomment  >div>button {
+	margin: 10px 0px 10px 0px;
+	height: 36px;
+}
+
+
+.usercomment h4 {
+	font-weight: bold;
+}
+
+.myself.read {
+	margin-bottom: 20px;
+}
+.myself.readForm {
+	display:none;
+}
+
+.myself.memoForm {
+	display:none;
+}
+
+.myself.calendarForm {
+	display:none;
+}
+
+.myself.memoForm textarea {
+	width: 100%;
+}
+
+/* *******************
+ *  register csv book
+ * ******************* */
+
+.actions {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.file_open:hover {
+    cursor: pointer;    
+}
+
+.uploaded {
+    margin-top: 20px;
+}
+
+.uploaded ul:first-child {
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;    
+}
+                
+.uploaded li{
+    position: relative;
+    display: block;
+    padding: 10px 15px;
+    margin-bottom: -1px;
+    background-color: #fff;
+    border: 1px solid #ddd;    
+}
+
+
+/* *******************
+ *  shelf_manage
+ * ******************* */
+.btnbg {
+	background-color:#ddd;
+}
+.btnpad {
+	padding: 0px;
+}
+
+.editable {
+	display: none;
+}
+
+.gplist:hover {
+	background-color: #eee;
+	cursor: pointer;
+}
